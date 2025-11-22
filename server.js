@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 // Ruta para registrar desocupación
 app.post("/api/desocupado", (req, res) => {
     const { id, fecha } = req.body;
-
+    console.log(fecha)
     db.query(
         "INSERT INTO desocupaciones (espacio, fecha) VALUES (?, ?)",
         [id, fecha],
