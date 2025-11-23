@@ -6,20 +6,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ---------------------------------------------
+// CONEXIÓN MYSQL CORREGIDA (HORA DE MÉXICO)
+// ---------------------------------------------
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "parking"
+    database: "parking",
+    timezone: "-06:00"   // <<< IMPORTANTE: evita la conversión a UTC
 });
 
-// Ruta para registrar desocupación
+// ---------------------------------------------
+// REGISTRAR DESOCUPACIÓN – Guarda hora enviada
+// SIN convertir a UTC
+// ---------------------------------------------
 app.post("/api/desocupado", (req, res) => {
     const { id, fecha } = req.body;
-    console.log(fecha)
+
+    // Convertir “2025-11-22T18:17:16.000Z” → “2025-11-22 18:17:16”
+    const fechaLocal = fecha.replace("Z", "").replace("T", " ");
+
     db.query(
         "INSERT INTO desocupaciones (espacio, fecha) VALUES (?, ?)",
-        [id, fecha],
+        [id, fechaLocal],
         err => {
             if (err) return res.status(500).send("Error BD");
             res.send("OK");
@@ -27,7 +37,9 @@ app.post("/api/desocupado", (req, res) => {
     );
 });
 
-// Ruta para obtener registros históricos
+// ---------------------------------------------
+// OBTENER HISTÓRICOS – regresan fecha sin UTC
+// ---------------------------------------------
 app.get("/api/desocupaciones", (req, res) => {
     db.query(
         "SELECT * FROM desocupaciones ORDER BY fecha DESC",
@@ -38,7 +50,10 @@ app.get("/api/desocupaciones", (req, res) => {
     );
 });
 
-let estadoActual = [false, false, false, false]; // 4 espacios
+// ---------------------------------------------
+// ESTADO ACTUAL DE ESPACIOS
+// ---------------------------------------------
+let estadoActual = [false, false, false, false];
 
 app.post("/api/estado", (req, res) => {
     const { espacios } = req.body;
@@ -54,5 +69,7 @@ app.get("/api/estado", (req, res) => {
     res.json({ espacios: estadoActual });
 });
 
-
+// ---------------------------------------------
+// INICIO DEL SERVIDOR
+// ---------------------------------------------
 app.listen(3000, () => console.log("API lista en puerto 3000"));
