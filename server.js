@@ -24,18 +24,16 @@ const db = mysql.createConnection({
 app.post("/api/desocupado", (req, res) => {
     const { id, fecha } = req.body;
 
-    // Convertir “2025-11-22T18:17:16.000Z” → “2025-11-22 18:17:16”
-    const fechaLocal = fecha.replace("Z", "").replace("T", " ");
-
     db.query(
         "INSERT INTO desocupaciones (espacio, fecha) VALUES (?, ?)",
-        [id, fechaLocal],
+        [id, fecha],   // <-- SE GUARDA TAL CUAL VIENE
         err => {
             if (err) return res.status(500).send("Error BD");
             res.send("OK");
         }
     );
 });
+
 
 // ---------------------------------------------
 // OBTENER HISTÓRICOS – regresan fecha sin UTC
