@@ -107,11 +107,26 @@ async function actualizarTabla() {
         tbody.innerHTML = "";
 
         datos.forEach(row => {
+            // Convertir fecha manualmente sin UTC
+            let fechaSQL = row.fecha.replace("T", " ").replace("Z", "").slice(0, 19);
+
+            // Crear objeto Date pero tratándolo como LOCAL
+            const [fecha, hora] = fechaSQL.split(" ");
+            const [y, m, d] = fecha.split("-");
+            const [hh, mm, ss] = hora.split(":");
+
+            const fechaLocal = new Date(y, m - 1, d, hh, mm, ss);
+
+            const fechaFormateada =
+                fechaLocal.toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" }) +
+                " " +
+                fechaLocal.toLocaleTimeString("es-MX", { hour12: false });
+
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${row.id}</td>
                 <td>${row.espacio}</td>
-                <td>${row.fecha}</td>
+                <td>${fechaFormateada}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -119,6 +134,7 @@ async function actualizarTabla() {
         console.error("Error al actualizar tabla:", e);
     }
 }
+
 
 // Actualiza el mapa según estado actual
 async function actualizarMapa() {
