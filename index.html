@@ -107,15 +107,16 @@ async function actualizarTabla() {
         tbody.innerHTML = "";
 
         datos.forEach(row => {
-            // Muestra exactamente el valor recibido de la base de datos
+    // Mostramos exactamente el valor recibido de la API, sin convertirlo
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${row.id}</td>
                 <td>${row.espacio}</td>
-                <td>${row.fecha}</td>
+                <td>${row.fecha}</td> <!-- SE MUESTRA TAL CUAL -->
             `;
             tbody.appendChild(tr);
         });
+
     } catch(e) {
         console.error("Error al actualizar tabla:", e);
     }
