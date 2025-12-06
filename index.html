@@ -53,6 +53,16 @@
         }
         .libre { background-color: green; }
         .ocupado { background-color: red; }
+
+        #totalOcupacion {
+            margin-top: 10px;
+            padding: 10px;
+            background: #eee;
+            font-size: 18px;
+            width: 300px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +76,10 @@
 
 <div id="tablaTab" class="tab-content active">
     <h2>Desocupaciones en tiempo real</h2>
+
+    <!-- NUEVO DIV SOLICITADO -->
+    <div id="totalOcupacion">Tiempo total de ocupación: 0 min</div>
+
     <table>
         <thead>
             <tr>
@@ -106,10 +120,16 @@ async function actualizarTabla() {
         const datos = await res.json();
 
         const tbody = document.getElementById("tabla");
+        const totalDiv = document.getElementById("totalOcupacion");
+
         tbody.innerHTML = "";
+
+        // SUMA DE TODOS LOS TIEMPOS
+        let total = 0;
 
         datos.forEach(row => {
             const minutos = Math.round(row.tiempo_total / 60);
+            total += minutos;
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -121,6 +141,9 @@ async function actualizarTabla() {
             `;
             tbody.appendChild(tr);
         });
+
+        // Mostrar el total arriba de la tabla
+        totalDiv.textContent = "Tiempo total de ocupación: " + total + " min";
 
     } catch(e) {
         console.error("Error al actualizar tabla:", e);
