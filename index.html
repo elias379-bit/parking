@@ -22,7 +22,7 @@
 
         table {
             border-collapse: collapse;
-            width: 60%;
+            width: 80%;
             margin-top: 20px;
         }
         th, td {
@@ -71,7 +71,9 @@
             <tr>
                 <th>ID</th>
                 <th>Cajón</th>
-                <th>Fecha/Hora</th>
+                <th>Hora ocupado</th>
+                <th>Hora desocupado</th>
+                <th>Tiempo total (min)</th>
             </tr>
         </thead>
         <tbody id="tabla"></tbody>
@@ -107,12 +109,15 @@ async function actualizarTabla() {
         tbody.innerHTML = "";
 
         datos.forEach(row => {
-    // Mostramos exactamente el valor recibido de la API, sin convertirlo
+            const minutos = Math.round(row.tiempo_total / 60);
+
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${row.id}</td>
                 <td>${row.espacio}</td>
-                <td>${row.fecha}</td> <!-- SE MUESTRA TAL CUAL -->
+                <td>${row.hora_ocupado}</td>
+                <td>${row.hora_desocupado}</td>
+                <td>${minutos}</td>
             `;
             tbody.appendChild(tr);
         });
