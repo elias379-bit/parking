@@ -128,8 +128,8 @@ async function actualizarTabla() {
         let total = 0;
 
         datos.forEach(row => {
-            const minutos = row.tiempo_total;
-
+            const minutos = Math.round(row.tiempo_total/60);
+            tiempototal+=minutos
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${row.id}</td>
@@ -142,7 +142,7 @@ async function actualizarTabla() {
         });
 
         // Mostrar el total arriba de la tabla
-        totalDiv.textContent = "Tiempo total de ocupación: " + minutos + " min";
+        totalDiv.textContent = "Tiempo total de ocupación: " + tiempototal + " min";
 
     } catch(e) {
         console.error("Error al actualizar tabla:", e);
